@@ -1,0 +1,120 @@
+type Transfer @entity {
+  id: ID!
+  from: String!
+  to: String!
+  value: BigInt!
+  txHash: String!
+  blockNumber: Int!
+  timestamp: DateTime!
+  contractAddress: String
+  tokenId: String
+}
+
+type PumpKekProject @entity {
+  id: ID! # Project contract address
+  creator: String!
+  name: String!
+  symbol: String!
+  totalDeposited: BigInt!
+  tokensSold: BigInt!
+  isGraduated: Boolean!
+  creationTimestamp: DateTime!
+  blockNumber: Int!
+  buys: [PumpKekBuy!] @derivedFrom(field: "project")
+  sells: [PumpKekSell!] @derivedFrom(field: "project")
+  graduations: [PumpKekGraduation!] @derivedFrom(field: "project")
+}
+
+type PumpKekBuy @entity {
+  id: ID!
+  project: PumpKekProject!
+  buyer: String!
+  roomAmount: BigInt!
+  tokenAmount: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type PumpKekSell @entity {
+  id: ID!
+  project: PumpKekProject!
+  seller: String!
+  tokenAmount: BigInt!
+  roomAmount: BigInt!
+  netAmount: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type PumpKekGraduation @entity {
+  id: ID!
+  project: PumpKekProject!
+  liquidity: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type BasedBondingCurveProject @entity {
+  id: ID! # Project contract address
+  totalBasedDeposited: BigInt!
+  tokensSold: BigInt!
+  isGraduated: Boolean!
+  creationTimestamp: DateTime!
+  graduationTimestamp: DateTime
+  blockNumber: Int!
+  pairAddress: String!
+  routerAddress: String!
+  buys: [BasedBondingCurveBuy!] @derivedFrom(field: "project")
+  sells: [BasedBondingCurveSell!] @derivedFrom(field: "project")
+  graduations: [BasedBondingCurveGraduation!] @derivedFrom(field: "project")
+  liquidityEvents: [BasedBondingCurveLiquidityAdded!] @derivedFrom(field: "project")
+}
+
+type BasedBondingCurveBuy @entity {
+  id: ID!
+  project: BasedBondingCurveProject!
+  buyer: String!
+  basedAmount: BigInt!
+  tokenAmount: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type BasedBondingCurveSell @entity {
+  id: ID!
+  project: BasedBondingCurveProject!
+  seller: String!
+  tokenAmount: BigInt!
+  basedAmount: BigInt!
+  netAmount: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type BasedBondingCurveGraduation @entity {
+  id: ID!
+  project: BasedBondingCurveProject!
+  liquidity: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type BasedBondingCurveLiquidityAdded @entity {
+  id: ID!
+  project: BasedBondingCurveProject!
+  pairAddress: String!
+  basedAmount: BigInt!
+  tokenAmount: BigInt!
+  lpTokens: BigInt!
+  timestamp: DateTime!
+  blockNumber: Int!
+}
+
+type BasedBondingCurveLP @entity {
+  id: ID! # Pair address
+  project: BasedBondingCurveProject! @unique # Required for one-to-one relation
+  basedReserve: BigInt!
+  tokenReserve: BigInt!
+  lpTokens: BigInt!
+  creationTimestamp: DateTime!
+}
